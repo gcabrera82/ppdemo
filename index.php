@@ -1,43 +1,39 @@
 <?php
-try{
-$serverName = "<SQLServer>";
-$database = "<database>";
-$uid = "<dbuser>";
-$pwd = "dbpass";
 
-$conn = new PDO("sqlsrv:server = $serverName; Database = $database;", $uid, $pwd);
+$serverName = "tcp:ent1sqlsrv.database.windows.net,1433";
+$database   = "ppdemo-db";
+$uid        = "sqladminuser";
+$pwd        = "SqlP@ssw0rd1234!";
 
-    // Select Query
-    // Executes the query
-    $tsql = "SELECT @@Version AS SQL_VERSION";
+try {
+    $conn = new PDO("sqlsrv:Server=$serverName;Database=$database;", $uid, $pwd);
+
+    $tsql = "SELECT @@VERSION AS SQL_VERSION";
     $stmt = $conn->query($tsql);
 
 } catch (PDOException $exception1) {
-    echo "<h1>Caught PDO exception:</h1>";
-    echo $exception1->getMessage() . PHP_EOL;
-    echo "<h1>PHP Info for troubleshooting</h1>";
+    echo "<h1>Error de conexión:</h1>";
+    echo $exception1->getMessage() . "<br>";
+    echo "<h2>PHP Info (debug)</h2>";
     phpinfo();
+    exit();
 }
 
 ?>
 
-<h1> Success Results : </h1>
+<h1>Success!</h1>
+<h2>Connected to Azure SQL:</h2>
 
 <?php
 try {
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        echo $row['SQL_VERSION'] . PHP_EOL;
-
+        echo "<pre>" . $row['SQL_VERSION'] . "</pre>";
     }
 } catch (PDOException $exception2) {
-    // Display errors
-    echo "<h1>Caught PDO exception:</h1>";
-    echo $exception2->getMessage() . PHP_EOL;
+    echo "<h1>Error ejecutando consulta:</h1>";
+    echo $exception2->getMessage();
 }
 
 unset($stmt);
 unset($conn);
 ?>
-
-
-
